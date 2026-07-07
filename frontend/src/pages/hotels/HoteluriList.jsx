@@ -11,7 +11,7 @@ const HoteluriList = ({hotel,favoriteHotels,setFavoriteHotels}) => {
 
 
     const res = await fetch(
-    "http://localhost:5000/api/users/favorite-hotel/toggle",
+    `${import.meta.env.VITE_API_URL}/users/favorite-hotel/toggle`,
     {
       method:"POST",
       headers:{

@@ -28,13 +28,13 @@ const AdminRezervari = () => {
   const [rezervariUsers,setRezervariUsers] = useState([]);
   const [hotelss,setHotelss] = useState([]);
   useEffect(()=>{
-    fetch("http://localhost:5000/api/hotels")
+    fetch(`${import.meta.env.VITE_API_URL}/hotels`)
     .then(res=>res.json())
     .then(data=>setHotelss(data))
     .catch(err=>console.error(err))
   },[])
   useEffect(()=>{
-    fetch("http://localhost:5000/api/users/rezervari")
+    fetch(`${import.meta.env.VITE_API_URL}/users/rezervari`)
     .then(res=>res.json())
     .then(data=>setRezervariUsers(data))
     .catch(err=>console.error(err))

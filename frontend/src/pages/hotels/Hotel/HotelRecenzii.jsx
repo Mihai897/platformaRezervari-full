@@ -59,7 +59,7 @@ try{
 
 
 const raspuns = await fetch(
-"http://localhost:5000/api/users/reviews",
+`${import.meta.env.VITE_API_URL}/users/reviews`,
 {
 
 method:"POST",
@@ -124,14 +124,14 @@ console.error(error);
 
   const [tipCalatorNume,setTipCalatorNume]=useState("");
   useEffect(()=>{
-    fetch(`http://localhost:5000/api/rooms/${slug}/recenzii/stats`)
+    fetch(`${import.meta.env.VITE_API_URL}/rooms/${slug}/recenzii/stats`)
     .then(res=>res.json())
     .then(data=>setStats(data))
     .catch(err=>console.error(err))
   },[slug]);
 
   useEffect(()=>{
-    fetch(`http://localhost:5000/api/rooms/${slug}`)
+    fetch(`${import.meta.env.VITE_API_URL}/rooms/${slug}`)
     .then(res=>res.json())
     .then(data=>setRooms(data))
     .catch(err=>console.error(err))
@@ -141,7 +141,7 @@ console.error(error);
   useEffect(()=>{
 
 
-    fetch("http://localhost:5000/api/users/tip-calatori")
+    fetch("${import.meta.env.VITE_API_URL}/users/tip-calatori")
 
     .then(res=>res.json())
 
@@ -330,7 +330,9 @@ console.error(error);
                 <button onClick={()=>setVisible(!visible)} className={`border border-button/30 ${visible? "rounded-t-lg": "rounded-lg"} px-3 py-2 flex justify-between items-center cursor-pointer w-full`}>
                   <div className='flex items-center space-x-2'>
                     <div className='w-25 h-13 rounded-lg'>
-                      <img className='w-full h-full rounded-lg object-cover ' src={` ${cameraSelectata?.image ||rooms[0]?.image}`} alt="" />
+                      <img className='w-full h-full rounded-lg object-cover ' src={(cameraSelectata?.image?.startsWith("http")
+                    ? cameraSelectata?.image
+                    : `${import.meta.env.BASE_URL}${cameraSelectata?.image}`) || rooms[0]?.image} alt="" />
                     </div>
 
                     <div className='text-[14px] text-start'>

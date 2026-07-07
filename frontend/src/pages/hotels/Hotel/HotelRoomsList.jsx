@@ -17,7 +17,7 @@ const HotelRoomsList = () => {
   const {slug} = useParams();
   const [rooms,setRooms] = useState([]);
   useEffect(()=>{
-    fetch(`http://localhost:5000/api/rooms/${slug}`)
+    fetch(`${import.meta.env.VITE_API_URL}/rooms/${slug}`)
     .then(res=>res.json())
     .then(data=>setRooms(data))
     .catch(err=>console.error(err));
@@ -27,7 +27,7 @@ const HotelRoomsList = () => {
   const [favoriteRooms,setFavoriteRooms]=useState([]);
   useEffect(()=>{
     if(!user?.id)return;
-    fetch(`http://localhost:5000/api/users/favorite-rooms/${user.id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/users/favorite-rooms/${user.id}`)
     .then(res=>res.json())
     .then(data=>{
       setFavoriteRooms(

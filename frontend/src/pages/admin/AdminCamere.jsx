@@ -28,13 +28,13 @@ const AdminCamere = () => {
   const [rooms,setRooms] = useState([]);
   const [hotelss,setHotelss] = useState([]);
   useEffect(()=>{
-    fetch("http://localhost:5000/api/hotels")
+    fetch(`${import.meta.env.VITE_API_URL}/hotels`)
     .then(res=>res.json())
     .then(data=>setHotelss(data))
     .catch(err=>console.error(err))
   },[])
   useEffect(()=>{
-    fetch("http://localhost:5000/api/rooms")
+    fetch(`${import.meta.env.VITE_API_URL}/rooms`)
     .then(res=>res.json())
     .then(data=>setRooms(data))
     .catch(err=>console.error(err))

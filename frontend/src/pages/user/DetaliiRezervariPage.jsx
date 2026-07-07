@@ -16,7 +16,7 @@ const DetaliiRezervariPage = () => {
 
   const [rezervare,setRezervare] = useState(null);
   useEffect(()=>{
-    fetch(`http://localhost:5000/api/users/rezervari/${user.id}/${codRezervare}`)
+    fetch(`${import.meta.env.VITE_API_URL}/users/rezervari/${user.id}/${codRezervare}`)
     .then(res=>res.json())
     .then(data=>setRezervare(data))
     .catch(err=>console.error(err))
@@ -33,7 +33,7 @@ const anuleazaRezervarea = async()=>{
 
 
         const raspuns = await fetch(
-        `http://localhost:5000/api/users/rezervari/anuleaza/${rezervare.id}`,
+        `${import.meta.env.VITE_API_URL}/users/rezervari/anuleaza/${rezervare.id}`,
         {
 
             method:"PUT",

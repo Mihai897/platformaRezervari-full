@@ -18,7 +18,7 @@ const Favorite = () => {
 
   useEffect(()=>{
     if(!user) return;
-    fetch(`http://localhost:5000/api/users/favorite-hotel/${user.id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/users/favorite-hotel/${user.id}`)
     .then(res=>res.json())
     .then(data=>setHotelsFav(data))
     .catch(err=>console.error(err))
@@ -26,7 +26,7 @@ const Favorite = () => {
 
   useEffect(()=>{
     if(!user) return;
-    fetch(`http://localhost:5000/api/users/favorite-rooms/${user.id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/users/favorite-rooms/${user.id}`)
     .then(res=>res.json())
     .then(data=>setRoomsFav(data))
     .catch(err=>console.error(err))

@@ -19,7 +19,7 @@ const Login = () => {
   const handleLogin = async () =>{
     try{
       const response = await fetch(
-        "http://localhost:5000/api/users/login",
+        `${import.meta.env.VITE_API_URL}/users/login`,
         {
           method: "POST",
           headers: {

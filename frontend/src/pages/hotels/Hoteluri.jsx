@@ -9,7 +9,7 @@ const Hoteluri = ({hotels}) => {
    const [favoriteHotels,setFavoriteHotels]=useState([]);
   useEffect(()=>{
       if(!user?.id)return;
-      fetch(`http://localhost:5000/api/users/favorite-hotel/${user.id}`)
+      fetch(`${import.meta.env.VITE_API_URL}/users/favorite-hotel/${user.id}`)
       .then(res=>res.json())
       .then(data=>{
         setFavoriteHotels(

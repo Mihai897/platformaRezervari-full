@@ -28,7 +28,7 @@ const Navbar = ({visibleConnect,setVisibleConnect}) => {
 
     if(!user) return;
 
-    fetch(`http://localhost:5000/api/users/notificari/${user.id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/users/notificari/${user.id}`)
     .then(res=>res.json())
     .then(data=>setNotificariUser(data))
     .catch(err=>console.error(err))

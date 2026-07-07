@@ -11,7 +11,7 @@ const RoomsPage = () => {
   const [camera,setCamera] = useState(null);
 
   useEffect(()=>{
-    fetch(`http://localhost:5000/api/rooms/${slug}/${roomSlug}`)
+    fetch(`${import.meta.env.VITE_API_URL}/rooms/${slug}/${roomSlug}`)
     .then(res=>res.json())
     .then(data=>setCamera(data))
     .catch(err=>console.error(err))

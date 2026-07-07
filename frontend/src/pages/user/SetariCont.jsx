@@ -26,7 +26,7 @@ const SetariCont = () => {
 
 
     const res = await fetch(
-    `http://localhost:5000/api/users/${user.id}/poza-profil`,
+    `${import.meta.env.VITE_API_URL}/users/${user.id}/poza-profil`,
     {
       method:"PUT",
       headers:{
