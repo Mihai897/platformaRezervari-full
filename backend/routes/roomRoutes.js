@@ -1,0 +1,11 @@
+import express from 'express';
+import { createRoom, getAllRooms, getRecenziiStatsByHotelSlug, getRoomBySlug, getRoomsByHotelSlug, getRoomsRecenziiByHotelSlug, stergeCamera } from '../controllers/roomController.js';
+const router = express.Router();
+router.get('/',getAllRooms);
+router.post('/',createRoom);
+router.delete('/:id',stergeCamera);
+router.get('/:slug',getRoomsByHotelSlug);
+router.get('/:slug/recenzii',getRoomsRecenziiByHotelSlug);
+router.get('/:slug/recenzii/stats',getRecenziiStatsByHotelSlug);
+router.get('/:slug/:roomSlug', getRoomBySlug);
+export default router;
