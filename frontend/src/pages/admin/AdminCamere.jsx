@@ -93,34 +93,34 @@ const AdminCamere = () => {
   const stergeCamera=(id)=>{
 
 
-fetch(
+    fetch(
 
-`http://localhost:5000/api/rooms/${id}`,
+    `${import.meta.env.VITE_API_URL}/rooms/${id}`,
 
-{
-method:"DELETE"
-}
+    {
+    method:"DELETE"
+    }
 
-)
+    )
 
-.then(res=>res.json())
+    .then(res=>res.json())
 
-.then(data=>{
-
-
-console.log(data)
+    .then(data=>{
 
 
-
-
-setModalCamAct(null);
-document.body.classList.remove("overflow-hidden")
-
-})
+    console.log(data)
 
 
 
-}
+
+    setModalCamAct(null);
+    document.body.classList.remove("overflow-hidden")
+
+    })
+
+
+
+  }
   
   const iconMap = {
     nrHotel: IoBedOutline,

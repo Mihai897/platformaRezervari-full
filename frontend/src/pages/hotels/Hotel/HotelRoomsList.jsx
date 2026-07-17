@@ -78,7 +78,7 @@ const HotelRoomsList = () => {
                           }
 
                         const res = await fetch(
-                        "http://localhost:5000/api/users/favorite-rooms/toggle",
+                        `${import.meta.env.VITE_API_URL}/users/favorite-rooms/toggle`,
                         {
                           method:"POST",
                           headers:{

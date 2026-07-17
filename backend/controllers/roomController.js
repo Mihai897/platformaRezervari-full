@@ -552,6 +552,8 @@ export const getRoomsByHotelSlug = async (req,res)=>{
       h.slug,
       h.nume,
       h.locatie,
+      COALESCE(recen.rating_mediu,0) as rating_mediu,
+      COALESCE(recen.numarul_recenziilor,0) AS numarul_recenziilor,
       COALESCE(img.imagini_camera,'[]'::jsonb) AS imagini
       
       FROM rooms r
@@ -567,6 +569,17 @@ export const getRoomsByHotelSlug = async (req,res)=>{
        GROUP BY i.camera_id
       ) img
       ON img.camera_id = r.id
+
+      LEFT JOIN (
+        SELECT
+        rec.room_id,
+        ROUND(AVG(rec.rating),1) AS rating_mediu,
+        COUNT (*) AS numarul_recenziilor
+        FROM recenzii_camere rec
+      
+        GROUP BY rec.room_id
+      ) recen
+       ON recen.room_id = r.id
 
       WHERE h.slug =$1
       AND r.slugs = $2

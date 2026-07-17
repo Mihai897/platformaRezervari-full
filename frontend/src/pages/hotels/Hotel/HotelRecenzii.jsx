@@ -141,7 +141,7 @@ console.error(error);
   useEffect(()=>{
 
 
-    fetch("${import.meta.env.VITE_API_URL}/users/tip-calatori")
+    fetch(`${import.meta.env.VITE_API_URL}/users/tip-calatori`)
 
     .then(res=>res.json())
 

@@ -43,9 +43,9 @@ const RoomsPage = () => {
         <div className='flex text-[14px] pb-4 modf2:items-center max-modf2:flex-col space-x-4'>
           <p className='text-[24px] font-medium'>{camera?.title}</p>
           <div className='flex space-x-4 max-modf2:space-x-2'>
-            <p className='border px-3 bg-button/30 text-button border-button rounded-sm mt-1'>{camera?.recomandare}</p>
-            <p className=' px-3 bg-blue-600 rounded-sm mt-1'>{camera?.recenzie_camera}</p>
-            <p className='text-gray-400 mt-0.5'>({camera?.numar_recenzii} recenzii)</p>
+            <p className='border px-3 bg-button/30 text-button border-button rounded-sm mt-1'>Recomandat</p>
+            <p className=' px-3 bg-blue-600 rounded-sm mt-1'>{camera?.rating_mediu}</p>
+            <p className='text-gray-400 mt-0.5'>({camera?.numarul_recenziilor} recenzii)</p>
           </div>
         </div>
         
