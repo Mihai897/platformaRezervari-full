@@ -9,7 +9,6 @@ const HoteluriList = ({hotel,favoriteHotels,setFavoriteHotels}) => {
   
   const toggleFavorite = async()=>{
 
-
     const res = await fetch(
     `${import.meta.env.VITE_API_URL}/users/favorite-hotel/toggle`,
     {
@@ -60,7 +59,10 @@ const HoteluriList = ({hotel,favoriteHotels,setFavoriteHotels}) => {
   return (
     <li key={hotel.id}  className='flex max-modf1:flex-col space-x-3 modf1:items-center  max-modf1:relative pb-8 border-b-button/30 border-b'>
       <div className=' w-55 max-modf1:w-full max-modf1:h-60 h-44 max-modf:w-45 overflow-hidden rounded-lg group relative'>
-        <img onClick={()=>navigate(`/hotels/${hotel.slug}`)} src={`${import.meta.env.BASE_URL}${hotel.img}`} className=' cursor-pointer w-full h-full   object-center  group-hover:scale-110 transition-transform duration-300 ease-in-out' alt="" />
+        <img onClick={()=>navigate(`/hotels/${hotel.slug}`)}
+        src={hotel.img?.startsWith("http")
+        ? hotel.img
+        : `${import.meta.env.BASE_URL}${hotel.img}`} className=' cursor-pointer w-full h-full   object-center  group-hover:scale-110 transition-transform duration-300 ease-in-out' alt="" />
         <button onClick={toggleFavorite}
         className='cursor-pointer absolute top-3 right-3 bg-button1/80 rounded-full px-1.5 py-1.5'
         >

@@ -332,9 +332,9 @@ if(rezervare.checkIn && rezervare.checkOut){
 
           <div className='flex space-x-3 items-center mt-3 border-b pb-3 border-b-button/30'>
             <div className='rounded-sm w-33 h-25 shrink-0 max-modf:w-30'>
-              <img className='rounded-sm w-full h-full shrink-0 object-center' src={camera.image?.startsWith("http")
-                    ? camera.image
-                    : `${import.meta.env.BASE_URL}${camera.image}`} alt="" />
+              <img className='rounded-sm w-full h-full shrink-0 object-center' src={camera?.image?.startsWith("http")
+                    ? camera?.image
+                    : `${import.meta.env.BASE_URL}${camera?.image}`} alt="" />
             </div>
             <div>
               <p>{camera?.title}</p>
@@ -382,7 +382,7 @@ if(rezervare.checkIn && rezervare.checkOut){
             </div>
             <div className='text-gray-400 flex justify-between'>
               <p>Reducere</p>
-              <p>{reducerea}%</p>
+              <p>{camera?.oferta?.stare_activare_oferta === false?0:reducerea}%</p>
             </div>
             <div className='text-gray-400 flex justify-between'>
               <p>Taxe si servicii</p>
@@ -391,8 +391,11 @@ if(rezervare.checkIn && rezervare.checkOut){
           </div>
 
           <div className='py-3 flex justify-between'>
-            <p>Total (TVA inclus)</p>
-            <p>{Math.round(((pretPeNoapte * durata+taxe)-(pretPeNoapte * durata+taxe)*reducerea )*100)/100} RON</p>
+            <p>Total (TVA inclus)</p> 
+            <p>{
+              camera?.oferta?.stare_activare_oferta === false? Math.round((pretPeNoapte*durata+taxe)*100)/100:
+              Math.round(((pretPeNoapte*durata+taxe)*(1-reducerea/100))*100)/100
+            } RON</p>
           </div>
 
           {!showDiv &&(<div className='w-full'>

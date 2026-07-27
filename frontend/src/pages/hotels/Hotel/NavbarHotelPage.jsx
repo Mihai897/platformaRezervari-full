@@ -6,14 +6,17 @@ const NavbarHotelPage = ({hotel}) => {
   return (
     <div className='max-w-screen-2xl mx-auto px-15 max-modf:px-10 max-modf1:px-8 max-modf8:px-3'>
       <div className='w-full relative'>
-        <img src={`${import.meta.env.BASE_URL}${hotel.img}`} className='w-full h-110 object-center max-modf1:h-85 max-modf2:h-65' alt="" />
+        <img
+        src={hotel.img?.startsWith("http")
+        ? hotel.img
+        : `${import.meta.env.BASE_URL}${hotel.img}`} className='w-full h-110 object-center max-modf1:h-85 max-modf2:h-65' alt="" />
         <div className='absolute top-0 bg-button1/40 w-full px-5 py-4 flex justify-between items-center'>
           <div>
             <p className='text-[18px] font-medium'>{hotel.nume}</p>
             <div className='flex space-x-1 mt-1'>
               {
                 [1,2,3,4,5].map(star =>(
-                  <FaStar className={star<=Math.round(hotel.nr_recenzie) ? "text-yellow-400 ": "text-gray-400"}/>
+                  <FaStar className={star<=Math.round(hotel.rating_mediu) ? "text-yellow-400 ": "text-gray-400"}/>
                 ))
               }
             </div>
@@ -23,8 +26,8 @@ const NavbarHotelPage = ({hotel}) => {
           <div className=''>
            
             <div className='text-center bg-button/80 px-1.5 py-3 rounded-2xl flex flex-col justify-center'>
-              <p className='font-medium'>{hotel.nr_recenzie}</p>
-              <p className='text-[10px] text-gray-300'>{hotel.text_recenzie} recenzii</p>
+              <p className='font-medium'>{hotel.rating_mediu}</p>
+              <p className='text-[10px] text-gray-300'>{hotel.total_recenzii} recenzii</p>
             </div>
             
           </div>

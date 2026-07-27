@@ -1,5 +1,200 @@
 import pool from "../db/db.js";
 
+export const createHotel = async(req,res)=>{
+  const client = await pool.connect();
+
+  try{
+
+    await client.query("BEGIN");
+
+    const {
+      slug,
+      img,
+      nume,
+      locatie,
+      stare_activare_hotel,
+      descriere,
+      email_hotel,
+      telefon_hotel,
+      site_hotel,
+      oras,
+      judet,
+      cod_postal,
+      program_receptie,
+      limbi_vorbite,
+      ora_check_in,
+      ora_check_out,
+      facilitati,
+      politici
+    } = req.body;
+
+    const hotelNou = await client.query(
+      `
+      INSERT INTO hotels
+      (
+        slug,
+        img,
+        nume,
+        locatie,
+        stare_activare_hotel,
+        descriere,
+        email_hotel,
+        telefon_hotel,
+        site_hotel,
+        oras,
+        judet,
+        cod_postal,
+        program_receptie,
+        limbi_vorbite,
+        ora_check_in,
+        ora_check_out
+      )
+      
+      VALUES
+      (
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16
+      )
+
+      RETURNING id
+
+      `,
+      [
+        slug,
+        img,
+        nume,
+        locatie,
+        stare_activare_hotel,
+        descriere,
+        email_hotel,
+        telefon_hotel,
+        site_hotel,
+        oras,
+        judet,
+        cod_postal,
+        program_receptie,
+        JSON.stringify(limbi_vorbite),
+        ora_check_in,
+        ora_check_out
+      ]
+    );
+
+    const hotel_id = hotelNou.rows[0].id;
+    
+    for(const facilitate of facilitati){
+      const facilitateNoua = await client.query(
+        `
+          INSERT INTO facilitati_hotel
+          (
+            hotel_id,
+            nume
+          )
+          
+          VALUES
+          (
+            $1,$2
+          )
+          
+          RETURNING id
+
+        `,
+        [
+          hotel_id,
+          facilitate.nume
+        ]
+      );
+
+      const facilitate_id = facilitateNoua.rows[0].id;
+
+      for(const info of facilitate.informatii){
+        await client.query(
+          `
+          INSERT INTO facilitati_hotel_detalii
+          (
+            facilitate_id,
+            facilitate
+          )
+
+          VALUES
+          (
+            $1,$2
+          )
+
+          `,
+          [
+            facilitate_id,
+            info
+          ]
+        );
+      }
+    }
+
+    for(const politica of politici){
+      const politicaNoua = await client.query(
+        `
+        INSERT INTO politici_hotel
+        (
+          hotel_id,
+          nume
+        )
+
+        VALUES
+        (
+          $1,$2
+        )
+        
+        RETURNING id
+
+        `,
+        [
+          hotel_id,
+          politica.nume
+        ]
+      );
+      const politica_id = politicaNoua.rows[0].id;
+
+      for(const info of politica.informatii){
+        await client.query(
+          `
+          INSERT INTO politici_hotel_detalii
+          (
+            politica_id,
+            politica
+          )
+
+          VALUES
+          (
+            $1,$2
+          )
+
+          `,
+          [
+            politica_id,
+            info
+          ]
+        );
+      }
+    }
+
+    await client.query("COMMIT");
+
+    res.status(201).json({
+      mesaj: "Hotel adaugat cu succes.",
+      hotel_id
+    })
+
+  }
+  catch(error) {
+    await client.query("ROLLBACK");
+    console.log(error);
+    res.status(500).json({
+      mesaj: "Eroare la adaugarea hotelului."
+    });
+  } finally{
+    client.release();
+  }
+}
+
+
  export const getAllHotels = async (req,res)=>{
   try {
     const rezultat = await pool.query(`
@@ -142,7 +337,33 @@ import pool from "../db/db.js";
 
     const {slug} =req.params;
 
-    const rezultat = await pool.query(`SELECT * FROM hotels WHERE slug =$1`, [slug]);
+    const rezultat = await pool.query(`
+      SELECT h.*,
+      COALESCE(rh.total_recenzii,0) AS total_recenzii,
+      COALESCE(rh.rating_mediu,0) AS rating_mediu
+      
+      
+      FROM hotels h
+
+
+      LEFT JOIN(
+      SELECT
+      r.hotel_id,
+      COUNT(*) AS total_recenzii,
+      ROUND(AVG(rc.rating),1) AS rating_mediu
+
+      FROM recenzii_camere rc
+      INNER JOIN rooms r
+      ON rc.room_id = r.id
+      GROUP by r.hotel_id
+      ) rh
+      ON rh.hotel_id = h.id
+
+    
+      
+      
+      WHERE h.slug =$1`
+      , [slug]);
     if(rezultat.rows.length ===0) {
       return res.status(404).json({
         mesaj: "Hotelul nu exista"

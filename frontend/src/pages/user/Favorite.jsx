@@ -50,13 +50,9 @@ const Favorite = () => {
   const showMoreRooms = ()=>{
     setVisibleMoreRooms(prev=>prev+2);
   }
-  const nrHotelFavorite  = hotels.filter(fav=>fav.favoriteHotel===true).length;
+  const nrHotelFavorite  = hotelsFav.length;
 
-  const nrRoomsFavorite = hotels.flatMap(hotel=>
-    hotel.rooms.map(room=>({
-      hotel,room
-    }))
-  ).filter(roomFav=>roomFav.room.favoriteCamera===true).length;
+  const nrRoomsFavorite = roomsFav.length;
 
 
   const [visibleFac,setVisibleFac] = useState(5);
@@ -188,7 +184,10 @@ const Favorite = () => {
                 <li key={favHotel?.id} className='border border-button/30 px-3 py-3 rounded-lg flex space-x-3 text-[15px] max-modf1:flex-col max-modf1:space-y-3'>
                   <div className='flex-2 flex modf8:space-x-3 max-modf8:w-full items-center max-modf8:flex-col max-modf8:items-start'>
                     <div className='w-40 max-modf8:w-full max-modf8:h-50 h-35 shrink-0 rounded-lg border border-button/30'>
-                      <img className='w-full h-full shrink-0 object-center rounded-lg' src={`${import.meta.env.BASE_URL}${favHotel?.img}`} alt="" />
+                      <img className='w-full h-full shrink-0 object-center rounded-lg'
+                      src={favHotel?.img?.startsWith("http")
+                      ? favHotel?.img
+                      : `${import.meta.env.BASE_URL}${favHotel?.img}`} alt="" />
                     </div>
 
                     <div className='max-modf8:mt-2'>
@@ -232,14 +231,14 @@ const Favorite = () => {
                 </li>
               ))}
             </ul>
-            <div className='mt-2 flex items-start'>
+            <div className='mt-2 flex space-x-3 items-start'>
               {
-                visibleMoreHotels < nrHotelFavorite && (
+                visibleMoreHotels <= nrHotelFavorite && (
                   <button onClick={showMoreHotels} className='text-button hover:text-button/80 transition-all duration-300 ease-in-out cursor-pointer'>Vezi mai multe hoteluri</button>
                 )
               }
               {
-                visibleMoreHotels >= nrHotelFavorite && 
+                visibleMoreHotels>2 && 
                 <button onClick={()=>setVisibleMoreHotels(2)} className='text-button hover:text-button/80 transition-all duration-300 ease-in-out cursor-pointer'>Vezi mai putine hoteluri</button>
               }
             </div>
@@ -313,14 +312,14 @@ const Favorite = () => {
                 ))
               }
             </ul>
-            <div className='mt-2 flex items-start'>
+            <div className='mt-2 flex space-x-3 items-start'>
               {
-                visibleMoreRooms < nrRoomsFavorite && (
+                visibleMoreRooms <= nrRoomsFavorite && (
                   <button onClick={showMoreRooms} className='text-button hover:text-button/80 transition-all duration-300 ease-in-out cursor-pointer'>Vezi mai multe camere</button>
                 )
               }
               {
-                visibleMoreRooms >= nrRoomsFavorite && (
+                visibleMoreRooms> 2 && (
                   <button onClick={()=>setVisibleMoreRooms(2)} className='text-button hover:text-button/80 transition-all duration-300 ease-in-out cursor-pointer'>Vezi mai putine camere</button>
                 )
               }

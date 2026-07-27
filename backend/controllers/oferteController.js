@@ -140,3 +140,77 @@ export const getAllActiveOffers = async (req,res)=>{
     });
   }
 };
+
+export const createOferta = async (req,res) =>{
+  try{
+    const {
+      camera_id,
+      reducerea,
+      cod_oferta,
+      oferta_start,
+      oferta_end,
+      stare_activare_oferta
+    } = req.body;
+
+    if(!camera_id || !reducerea ||!oferta_start || !oferta_end){
+      return res.status(400).json({
+        mesaj: "Date incomplete"
+      });
+    }
+
+    const verificare = await pool.query(
+      `
+      
+        SELECT id
+        FROM oferte_camere
+        WHERE camera_id =$1
+
+      `,[camera_id]
+    );
+
+    if(verificare.rows.length>0){
+      return res.status(400).json({
+        mesaj: "Camera are deja oferta activa"
+      });
+    }
+
+
+    const oferta = await pool.query(
+      `
+        INSERT INTO oferte_camere
+        (
+          camera_id,
+          reducerea,
+          stare_activare_oferta,
+          cod_oferta,
+          oferta_start,
+          oferta_end
+        )
+        VALUES(
+          $1,$2,$3,$4,$5,$6
+        )
+        
+        RETURNING *
+
+      `,[
+        camera_id,
+        reducerea,
+        stare_activare_oferta,
+        cod_oferta,
+        oferta_start,
+        oferta_end
+      ]
+    );
+    res.status(201).json({
+      mesaj: "Oferta creata",
+      oferta:oferta.rows[0]
+    });
+  }
+
+  catch(error){
+    console.log(error);
+    res.status(500).json({
+      mesaj: "Eroare creare oferta"
+    })
+  }
+}

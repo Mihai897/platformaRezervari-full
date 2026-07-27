@@ -10,20 +10,61 @@ const AdminAdaugaOferta = () => {
   const {slug} = useParams();
   
   const [hottels, setHottels] = useState([]);
-  const [camereSlug, setCamereSlug] = useState([]);
-  useEffect(()=>{
-    fetch(`${import.meta.env.VITE_API_URL}/rooms/rosetti-hotel`)
+  const [camereDisponibile, setCamereDisponibile] = useState([]);
+  /*useEffect(()=>{
+    fetch(`${import.meta.env.VITE_API_URL}/rooms/${slug}/fara-oferte`)
     .then(res=>res.json())
-    .then(data=>setCamereSlug(data))
+    .then(data=>setCamereDisponibile(data))
     .catch(err=>console.error(err))
   },[slug])
-  
+  */
   useEffect(()=>{
     fetch(`${import.meta.env.VITE_API_URL}/hotels`)
     .then(res=>res.json())
     .then(data=>setHottels(data))
     .catch(err=>console.error(err))
   },[])
+
+
+  const [hotelSelectat,setHotelSelectat] = useState(null);
+  const [cameraSelectata,setcameraSelectata] = useState(null);
+
+  const [oferta,setOferta] = useState({
+    cod_oferta:"",
+    reducerea:"",
+    oferta_start:"",
+    oferta_end:"",
+    stare_activare_oferta:false
+  });
+
+
+  const creareOferta = async()=>{
+    const data = {
+      camera_id: cameraSelectata.id,
+      ...oferta
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/oferte`,
+      {
+        method:"POST",
+        headers:{
+          "Content-Type": "application/json"
+        },
+        body:JSON.stringify(data)
+      }
+    );
+    const rezultat = await response.json();
+    if(response.ok){
+      alert(rezultat.mesaj)
+      navigate("/admin/admin-oferte");
+    } else{
+      alert(rezultat.mesaj)
+    }
+  }
+
+
+  
   
 
   const navigate = useNavigate();
@@ -53,15 +94,42 @@ const AdminAdaugaOferta = () => {
             <p className='text-gray-400'>Alege hotelul</p>
             <div className='mt-3 relative'>
               <button onClick={()=>setVisibleHotelList(!visibleHotelList)} className={`flex  space-x-3 items-center border border-button/30 px-3 py-3 w-full justify-between ${visibleHotelList?"rounded-t-sm bg-button/60":"bg-background rounded-sm"} hover:bg-button/60 transition-all duration-300 ease-in-out cursor-pointer`}>
-                <p>Selecteaza hotelul</p>
+                {
+                  hotelSelectat === null ? <p>Selecteaza hotelul</p>: 
+                  <div className='flex items-center space-x-3'>
+                    <div className='w-30 h-20 shrink-0'>
+                      <img className='w-full h-full'
+                      src={hotelSelectat.img?.startsWith("http")
+                      ? hotelSelectat.img
+                      : `${import.meta.env.BASE_URL}${hotelSelectat.img}`} alt="" />
+                    </div>
+                    <div className='text-gray-400 text-start'>
+                      <p>ID: {hotelSelectat.id}</p>
+                      <p>{hotelSelectat.nume}</p>
+                      <p>{hotelSelectat.locatie}</p>
+                    </div>
+                  </div>
+                }
                 {visibleHotelList?<IoIosArrowUp />:<IoIosArrowDown />}
               </button>
               <ul className={`absolute transition-all duration-500 ease-in-out overflow-y-scroll scrollbar-thin overflow-hidden ${visibleHotelList?"max-h-40 opacity-100":"max-h-0 opacity-0"} bg-background z-30  w-full`}>
                 {
                   hottels.map((hotel,iHotel)=>(
-                    <li className={`border border-button/30 px-3 py-3 hover:bg-button/60 cursor-pointer transition-all duration-300 ease-in-out flex items-center space-x-3`} key={hotel.id}>
+                    <li onClick={()=>{
+                      setHotelSelectat(hotel);
+                      setVisibleHotelList(false);
+
+                      fetch(`${import.meta.env.VITE_API_URL}/rooms/${hotel.slug}/fara-oferte`)
+                      .then(res=>res.json())
+                      .then(data=>setCamereDisponibile(data))
+
+
+                    }} className={`border border-button/30 px-3 py-3 hover:bg-button/60 cursor-pointer transition-all duration-300 ease-in-out flex items-center space-x-3`} key={hotel.id}>
                       <div className='w-30 h-20 shrink-0'>
-                        <img className='w-full h-full' src={`${import.meta.env.BASE_URL}${hotel.img}`} alt="" />
+                        <img className='w-full h-full'
+                        src={hotel.img?.startsWith("http")
+                        ? hotel.img
+                        : `${import.meta.env.BASE_URL}${hotel.img}`} alt="" />
                       </div>
                       <div className='text-gray-400'>
                         <p>ID: {hotel.id}</p>
@@ -79,15 +147,38 @@ const AdminAdaugaOferta = () => {
             <p className='text-gray-400'>Alege camera unde vrei sa fie activa oferta</p>
             <div className='mt-3 relative'>
               <button onClick={()=>setVisibleCameraList(!visibleCameraList)} className={`flex  space-x-3 items-center border border-button/30 px-3 py-3 w-full justify-between ${visibleCameraList?"rounded-t-sm":"rounded-sm"} hover:bg-button/60 transition-all duration-300 ease-in-out cursor-pointer`}>
-                <p>Selecteaza camera</p>
+                {
+                  cameraSelectata === null? <p>Selecteaza camera</p>:
+                  <div className='flex space-x-3 items-center'>
+                    <div className='w-30 h-20 shrink-0'>
+                      <img className='w-full h-full'
+                      src={cameraSelectata.image?.startsWith("http")
+                      ? cameraSelectata.image
+                      : `${import.meta.env.BASE_URL}${cameraSelectata.image}`} alt="" />
+                    </div>
+                    <div className='text-gray-400 text-start'>
+                      <p>Cod: {cameraSelectata.cod_camera}</p>
+                      <p>{cameraSelectata.title}</p>
+                      
+                    </div>
+                  </div>
+                }
                 {visibleCameraList?<IoIosArrowUp />:<IoIosArrowDown />}
               </button>
               <ul className={`absolute transition-all duration-500 ease-in-out overflow-y-scroll scrollbar-thin overflow-hidden ${visibleCameraList?"max-h-40 opacity-100":"max-h-0 opacity-0"} bg-background z-30  w-full`}>
                 {
-                  camereSlug.map((camera,iCamera)=>(
-                    <li className={`border border-button/30 px-3 py-3 hover:bg-button/60 cursor-pointer transition-all duration-300 ease-in-out flex items-center space-x-3`} key={camera.id}>
+                  camereDisponibile.map((camera,iCamera)=>(
+                    <li
+                    onClick={()=>{
+                      setcameraSelectata(camera);
+                      setVisibleCameraList(false);
+                    }}
+                    className={`border border-button/30 px-3 py-3 hover:bg-button/60 cursor-pointer transition-all duration-300 ease-in-out flex items-center space-x-3`} key={camera.id}>
                       <div className='w-30 h-20 shrink-0'>
-                        <img className='w-full h-full' src={`${import.meta.env.BASE_URL}${camera.image}`} alt="" />
+                        <img className='w-full h-full'
+                        src={camera.image?.startsWith("http")
+                        ? camera.image
+                        : `${import.meta.env.BASE_URL}${camera.image}`} alt="" />
                       </div>
                       <div className='text-gray-400'>
                         <p>Cod: {camera.cod_camera}</p>
@@ -103,13 +194,25 @@ const AdminAdaugaOferta = () => {
 
           <div className=''>
             <p className='text-gray-400 '>Cod oferta <span className='text-red-400'>*</span></p>
-            <input type="text" className='border border-button/30 mt-3 px-3 py-1.5 rounded-sm outline-0 w-full' maxLength={3} placeholder='Introduceti un cod de maxim 3 caractere' name="" id="" />
+            <input type="text" className='border border-button/30 mt-3 px-3 py-1.5 rounded-sm outline-0 w-full' maxLength={3} placeholder='Introduceti un cod de maxim 3 caractere' name="" id="" 
+            value = {oferta?.cod_oferta}
+            onChange={e=>setOferta({
+              ...oferta,
+              cod_oferta:e.target.value
+            })}
+            />
           </div>
 
           <div className=''>
             <p className='text-gray-400 '>Reducere <span className='text-red-400'>*</span></p>
             <div className='relative mt-3'>
-              <input type="number" className='border border-button/30  pl-3 py-1.5 rounded-sm no-spinner outline-0  [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none w-full' maxLength={3} placeholder='Ex: 0.25' min={0} max={100} name="" id="" />
+              <input type="number" className='border border-button/30  pl-3 py-1.5 rounded-sm no-spinner outline-0  [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none w-full' maxLength={3} placeholder='Ex: 0.25' min={0} max={100} name="" id="" 
+              value={oferta.reducerea}
+              onChange={e=>setOferta({
+                ...oferta,
+                reducerea: e.target.value
+              })}
+              />
               <p className='absolute text-gray-400 right-3 top-1/2 -translate-y-1/2'>procent (%)</p>
             </div>
           </div>
@@ -121,11 +224,23 @@ const AdminAdaugaOferta = () => {
             <div className={`grid max-modf8:grid-cols-1 grid-cols-2 gap-3 mt-3`}>
               <div>
                 <p className='text-gray-400'>De la:</p>
-                <input type="date" className='border mt-3 border-button/30  px-3 py-1.5 rounded-sm outline-0 [&::-webkit-calendar-picker-indicator]:invert  w-full' placeholder=''  name="" id="" />
+                <input type="date" className='border mt-3 border-button/30  px-3 py-1.5 rounded-sm outline-0 [&::-webkit-calendar-picker-indicator]:invert  w-full' placeholder=''  name="" id="" 
+                value={oferta.oferta_start}
+                onChange={e=>setOferta({
+                  ...oferta,
+                  oferta_start:e.target.value
+                })}
+                />
               </div>
               <div>
                 <p className='text-gray-400'>Pana la:</p>
-                <input type="date" className='border mt-3 border-button/30 [&::-webkit-calendar-picker-indicator]:invert outline-0 px-3 py-1.5 rounded-sm w-full' name="" id="" />
+                <input type="date" className='border mt-3 border-button/30 [&::-webkit-calendar-picker-indicator]:invert outline-0 px-3 py-1.5 rounded-sm w-full' name="" id="" 
+                value={oferta.oferta_end}
+                onChange={e=>setOferta({
+                  ...oferta,
+                  oferta_end: e.target.value
+                })}
+                />
               </div>
               
             </div>
@@ -136,7 +251,13 @@ const AdminAdaugaOferta = () => {
             <div className={`grid grid-cols-2 gap-3 mt-3 ${visibleBara?"max-modf2:grid-cols-1":"max-modf8:grid-cols-1"}`}>
               <div className='w-full flex items-center space-x-3 '>
                 <div>
-                  <button onClick={()=>setVisibleButonActivare(!visibleButonActivare)} className={`w-9 h-4.5 cursor-pointer rounded-full ${visibleButonActivare===false?"bg-gray-400":"bg-button"} shrink-0 transition-all duration-300 ease-in-out relative`}><div className={`absolute transition-all duration-300 ease-in-out ${visibleButonActivare===false?"translate-x-0": "translate-x-full"} shrink-0 bg-white w-[50%] h-full rounded-full top-1/2 -translate-y-1/2`}></div></button>
+                  <button onClick={()=>{
+                    setVisibleButonActivare(!visibleButonActivare);
+                    setOferta({
+                      ...oferta,
+                      stare_activare_oferta: !visibleButonActivare
+                    });
+                    }} className={`w-9 h-4.5 cursor-pointer rounded-full ${visibleButonActivare===false?"bg-gray-400":"bg-button"} shrink-0 transition-all duration-300 ease-in-out relative`}><div className={`absolute transition-all duration-300 ease-in-out ${visibleButonActivare===false?"translate-x-0": "translate-x-full"} shrink-0 bg-white w-[50%] h-full rounded-full top-1/2 -translate-y-1/2`}></div></button>
                 </div>
                 <div>
                   <p>Activare oferta</p>
@@ -167,7 +288,7 @@ const AdminAdaugaOferta = () => {
 
         <div className='flex mt-3 px-3 space-x-3 justify-end'>
           <button onClick={()=>{navigate("/admin/admin-oferte"); window.scrollTo(0,0)}} className='border border-button/30 px-3  py-1.5 rounded-sm hover:bg-button/60 transition-all duration-300 ease-in-out cursor-pointer'>Inchide</button>
-          <button onClick={()=>{navigate("/admin/admin-oferte"); window.scrollTo(0,0)}} className='border border-button/30 px-3  py-1.5 rounded-sm hover:bg-button/60 transition-all bg-button duration-300 ease-in-out cursor-pointer'>Salveaza modificari</button>
+          <button onClick={creareOferta} className='border border-button/30 px-3  py-1.5 rounded-sm hover:bg-button/60 transition-all bg-button duration-300 ease-in-out cursor-pointer'>Salveaza modificari</button>
         </div>
 
       </div>

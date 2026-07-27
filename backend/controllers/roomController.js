@@ -622,3 +622,36 @@ export const getRoomsByHotelSlug = async (req,res)=>{
     });
   }
  };
+
+
+ export const getRoomsWithoutOOffer = async (req,res)=>{
+  try{
+    const {slug}=req.params;
+
+    const rezultat = await pool.query(
+      `
+        SELECT r.*
+
+        FROM rooms r
+
+        INNER JOIN hotels h
+        ON r.hotel_id = h.id
+
+        LEFT JOIN oferte_camere o
+        ON r.id = o.camera_id
+        
+        WHERE h.slug =$1
+        AND o.id IS null
+      
+      `,
+      [slug]
+    );
+    res.status(200).json(rezultat.rows);
+  }
+  catch(error) {
+    console.error(error);
+    res.status(500).json({
+      mesaj: "Eroare la preluarea camerelor fara oferta"
+    })
+  }
+ }

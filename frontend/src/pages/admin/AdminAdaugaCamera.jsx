@@ -147,7 +147,10 @@ const salveazaCamera = async () => {
               <button onClick={()=>setVisibleSelectHotel(!visibleSelectHotel)} className={`${visibleSelectHotel?"rounded-t-sm bg-button/30":"rounded-sm bg-background"} border border-button/30 w-full px-3 py-1.5  flex items-center space-x-3 justify-between cursor-pointer hover:bg-button/30 transition-all duration-300 ease-in-out`}>
                 <div className='flex items-center space-x-3'>
                   <div className='shrink-0'>
-                    <img className='w-15 shrink-0 h-10 rounded-sm' src={`${import.meta.env.BASE_URL}${hotelSelectat?.img}`} alt="" />
+                    <img className='w-15 shrink-0 h-10 rounded-sm'
+                    src={hotelSelectat?.img?.startsWith("http")
+                      ? hotelSelectat?.img
+                      : `${import.meta.env.BASE_URL}${hotelSelectat?.img}`} alt="" />
                   </div>
                   <div className='text-start'>
                     <p>{hotelSelectat?.nume || "Selecteaza hotelul"}</p>
@@ -167,7 +170,10 @@ const salveazaCamera = async () => {
                     }} className='border border-button/30 w-full px-3 py-1.5  flex items-center space-x-3  cursor-pointer hover:bg-button/30 transition-all duration-300 ease-in-out'>
                       <div className='flex items-center space-x-3'>
                         <div className='shrink-0'>
-                          <img className='w-15 shrink-0 h-10 rounded-sm' src={`${import.meta.env.BASE_URL}${hotel?.img}`} alt="" />
+                          <img className='w-15 shrink-0 h-10 rounded-sm'
+                          src={hotel?.img?.startsWith("http")
+                          ? hotel?.img
+                          : `${import.meta.env.BASE_URL}${hotel?.img}`} alt="" />
                         </div>
                         <div className='text-start'>
                           <p>{hotel.nume}</p>

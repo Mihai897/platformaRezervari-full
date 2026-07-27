@@ -185,7 +185,10 @@ const AdminHoteluri = () => {
 
                   <div className={`${visibleBara?"max-modf7:w-63":"max-modf7:w-75"} transition-[width] duration-300 ease-in-out max-modf7:shrink-0 flex space-x-3 items-center modf7:flex-2`}>
                     <div className='w-15 h-15 rounded-lg shrink-0 overflow-hidden'>
-                      <img className='w-full h-full object-center rounded-lg hover:scale-110 transition-all duration-300 ease-in-out' src={`${import.meta.env.BASE_URL}${par?.img}`} alt="" />
+                      <img className='w-full h-full object-center rounded-lg hover:scale-110 transition-all duration-300 ease-in-out'
+                      src={par?.img?.startsWith("http")
+                    ? par?.img
+                    : `${import.meta.env.BASE_URL}${par?.img}`}alt="" />
                     </div>
 
                     <div>
@@ -273,27 +276,14 @@ const AdminHoteluri = () => {
                           <div className='grid grid-cols-2 max-modf2:grid-cols-1 gap-3'>
                             <div className='mt-1.5 space-y-1.5'>
                               <div className='h-40 w-full max-modf2:h-60 max-modf8:h-40 relative'>
-                                <img  src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`} className='w-full h-full rounded-lg' alt="" />
+                                <img
+                                src={modalHotelActiuni?.par?.img?.startsWith("http")
+                                ? modalHotelActiuni?.par?.img
+                                : `${import.meta.env.BASE_URL}${modalHotelActiuni?.par?.img}`} className='w-full h-full rounded-lg' alt="" />
                                 <div className={`absolute right-3 top-1 px-3  text-white rounded-sm ${modalHotelActiuni.par.stare_activare_hotel===true?"bg-green-600": "bg-red-600"}`}>{modalHotelActiuni.par.stare_activare_hotel===true?"Activ":"Inactiv"}</div>
                               </div>
 
-                              <div className='grid grid-cols-5 gap-1.5'>
-                                <div>
-                                  <img className='rounded-sm' src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`} alt="" />
-                                </div>
-                                <div>
-                                  <img className='rounded-sm' src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`} alt="" />
-                                </div>
-                                <div>
-                                  <img className='rounded-sm' src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`} alt="" />
-                                </div>
-                                <div>
-                                  <img className='rounded-sm' src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`} alt="" />
-                                </div>
-                                <div className='border border-button/15 hover:bg-button/15 cursor-pointer transition-all duration-300 ease-in-out bg-button/8 rounded-sm flex items-center justify-center'>
-                                  <p>+8</p>
-                                </div>
-                              </div>
+                              
 
 
                               <div className='space-y-1.5'>
@@ -399,27 +389,22 @@ const AdminHoteluri = () => {
                             <div className='mt-1.5 space-y-1.5'>
                               <p>Fotografii hotel</p>
                               <div className='h-40 w-full max-modf2:h-60 max-modf8:h-40 relative'>
-                                <img  src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`} className='w-full h-full rounded-lg' alt="" />
+                                <img 
+                                src={modalHotelActiuni?.par?.img?.startsWith("http")
+                                ? modalHotelActiuni?.par?.img
+                                : `${import.meta.env.BASE_URL}${modalHotelActiuni?.par?.img}`} className='w-full h-full rounded-lg' alt="" />
                               </div>
 
-                              <div className='grid grid-cols-5 gap-1.5'>
+                              <div className=''>
                                 <div>
-                                  <img className='rounded-sm' src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`}alt="" />
-                                </div>
-                                <div>
-                                  <img className='rounded-sm' src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`} alt="" />
-                                </div>
-                                <div>
-                                  <img className='rounded-sm' src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`} alt="" />
-                                </div>
-                                <div>
-                                  <img className='rounded-sm' src={`${import.meta.env.BASE_URL}${modalHotelActiuni.par.img}`}alt="" />
+                                  <p>URL imagine noua:</p>
+                                  <input type="text" className='border border-button/30 px-3 py-1.5 w-full mb-3 mt-3 rounded-lg outline-0' name="" id="" />
                                 </div>
                                 <div className='border border-button/15 hover:bg-button/15 cursor-pointer transition-all duration-300 ease-in-out bg-button/8 rounded-sm flex items-center justify-center'>
                                   <p className='text-[24px]'>+</p>
                                 </div>
                               </div>
-                              <p className='text-gray-400'>Format recomandat: JPG sau PNG. Dimensiune maxima: 5MB</p>
+                              
                             </div>
 
                             

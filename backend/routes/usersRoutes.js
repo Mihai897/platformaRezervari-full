@@ -1,5 +1,5 @@
 import express from 'express';
-import { adaugaRecenzieCamera, anuleazaRezervare, createReservation, getAllReservation, getAllReviewRoomByRoomId, getAllRewiewRooms, getAllRewivewRoomsByUserId, getAllUserReservation, getNotificariByUserId, getTipuriCalator, getUserHotelFav, getUserReservationByCod, getUserRoomsFav, getUsers, loginUser, registerUser, toggleFavoriteHotel, toggleFavoriteRoom, updatePozaProfil } from '../controllers/usersController.js';
+import { adaugaRecenzieCamera, anuleazaRezervare, createAdminReservation, createReservation, getAllReservation, getAllReviewRoomByRoomId, getAllRewiewRooms, getAllRewivewRoomsByUserId, getAllUserReservation, getNotificariByUserId, getTipuriCalator, getUserHotelFav, getUserReservationByCod, getUserRoomsFav, getUsers, loginUser, registerUser, toggleFavoriteHotel, toggleFavoriteRoom, updatePozaProfil } from '../controllers/usersController.js';
 
 const router = express.Router();
 
@@ -8,6 +8,7 @@ router.get('/rezervari',getAllReservation);
 router.get('/rezervari/:id',getAllUserReservation);
 router.get('/rezervari/:id/:codRezervare',getUserReservationByCod);
 router.post('/rezervari',createReservation);
+router.post('/rezervari/admin',createAdminReservation);
 router.put("/rezervari/anuleaza/:id",anuleazaRezervare);
 router.get('/recenzii-camere/:id',getAllRewivewRoomsByUserId);
 router.get('/recenzii-camere',getAllRewiewRooms);

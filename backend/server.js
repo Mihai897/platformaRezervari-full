@@ -22,8 +22,8 @@ app.get('/', (req,res) =>{
 app.use('/api/hotels', hotelRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/oferte', oferteRoutes);
-app.use('/api/users',usersRoutes)
-app.use('/api/platforma-recenzii',platformaRoutes)
+app.use('/api/users',usersRoutes);
+app.use('/api/platforma-recenzii',platformaRoutes);
 
 
 const PORT = process.env.PORT || 5000;

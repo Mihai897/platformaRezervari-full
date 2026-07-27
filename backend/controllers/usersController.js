@@ -256,6 +256,284 @@ export const createReservation = async (req,res)=>{
 }
 
 
+export const createAdminReservation = async (req,res)=>{
+  try {
+
+    const {
+
+      nume,
+      prenume,
+      telefon,
+      email,
+      
+      room_id,
+      tarif_id,
+      check_in,
+      check_out,
+      nr_adulti,
+      nr_copii,
+      notite_client
+    } = req.body;
+
+
+    if (
+      !nume ||
+      !prenume ||
+      !telefon ||
+      !email ||
+      !room_id ||
+      !tarif_id ||
+      !check_in ||
+      !check_out
+      ) {
+      return res.status(400).json({
+          mesaj: "Date incomplete."
+      });
+    }
+
+    const user = await pool.query(
+
+    `
+      SELECT id
+      FROM users
+      WHERE email=$1
+      `,
+      [email]
+
+    );
+
+    let user_id;
+
+    if(user.rows.length===0){
+      const parola_hash= "Admin_created";
+      const userNou = await pool.query(
+        `
+        INSERT INTO users(
+          nume,
+          prenume,
+          email,
+          telefon,
+          parola_hash
+        )
+        VALUES(
+          $1,$2,$3,$4,$5
+        )
+        RETURNING id
+        `,[
+          nume,
+          prenume,
+          email,
+          telefon,
+          parola_hash
+        ]
+      );
+      user_id = userNou.rows[0].id;
+
+    } else {
+      user_id = user.rows[0].id;
+    }
+
+
+    const checkIn = new Date(check_in);
+    const checkOut = new Date(check_out);
+
+    const numar_nopti = Math.ceil(
+    (checkOut - checkIn) / (1000 * 60 * 60 * 24)
+    );
+    if(numar_nopti<=0){
+
+        return res.status(400).json({
+
+            mesaj:"Perioada rezervarii este invalida."
+
+        });
+
+    }
+    
+
+    const tarif = await pool.query(
+    `
+    SELECT pret_tarif
+    FROM tarife
+    WHERE id=$1
+    AND camera_id =$2
+    `,
+    [tarif_id,room_id]
+    );
+    if(tarif.rows.length===0){
+
+      return res.status(404).json({
+
+          mesaj:"Tariful nu exista."
+
+      });
+
+    }
+
+    const pret_pe_noapte = Number(tarif.rows[0].pret_tarif);
+    const pret_camera_fara_taxe =pret_pe_noapte * numar_nopti;
+    const taxe_servicii = 30;
+    const total_platit = pret_camera_fara_taxe + taxe_servicii;
+
+    const oferta = await pool.query(
+    `
+      SELECT reducerea, stare_activare_oferta
+      FROM oferte_camere
+      WHERE camera_id = $1
+      `,
+      [room_id]
+    );
+
+    let total_platit_final = total_platit;
+
+    if (
+        oferta.rows.length > 0 &&
+        oferta.rows[0].stare_activare_oferta
+    ) {
+
+        const reducere = Number(oferta.rows[0].reducerea);
+
+        total_platit_final =
+            total_platit * (1 - reducere);
+
+    }
+
+
+
+
+    const cod_rezervare = "RZ-" + Date.now();
+   
+    const rezervareNoua = await pool.query(
+
+    `
+
+    INSERT INTO rezervari
+
+    (
+
+    cod_rezervare,
+
+    user_id,
+
+    room_id,
+
+    tarif_id,
+
+
+    check_in,
+
+    check_out,
+
+    numar_nopti,
+
+
+    nr_adulti,
+
+    nr_copii,
+
+
+    pret_pe_noapte,
+
+    pret_camera_fara_taxe,
+
+
+    taxe_servicii,
+
+    total_platit,
+
+
+    notite_client
+
+    )
+
+
+    VALUES
+
+    (
+
+    $1,$2,$3,$4,
+
+    $5,$6,$7,
+
+    $8,$9,
+
+    $10,$11,
+
+    $12,$13,
+
+    $14
+
+    )
+
+
+    RETURNING *
+
+    `,
+
+    [
+
+    cod_rezervare,
+
+    user_id,
+
+    room_id,
+
+    tarif_id,
+
+
+    check_in,
+
+    check_out,
+
+    numar_nopti,
+
+
+    nr_adulti,
+
+    nr_copii,
+
+
+    pret_pe_noapte,
+
+    pret_camera_fara_taxe,
+
+
+    taxe_servicii,
+
+    total_platit,
+
+
+    notite_client
+
+    ]
+
+
+    );
+
+
+  return res.status(201).json({
+
+    mesaj:"Rezervarea a fost creata cu succes.",
+
+    rezervare: {
+
+        ...rezervareNoua.rows[0]
+
+    }
+
+  });
+
+  } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+          mesaj: "Eroare server."
+      });
+
+  }
+}
+
 export const registerUser = async (req,res) =>{
   try{
     const {
@@ -1050,7 +1328,6 @@ export const getUserHotelFav = async (req,res)=>{
       h.anulare_gratuita,
       h.data_anulare,
       h.slug,
-      COALESCE(rh.hotel_id,0) AS hotel_id,
 
       COALESCE(rh.rating_mediu,0) AS rating_hotel,
       COALESCE(rh.total_recenzii,0) AS total_recenzii

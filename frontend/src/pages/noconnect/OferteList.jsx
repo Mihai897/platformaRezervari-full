@@ -7,7 +7,10 @@ const OferteList = ({oferta}) => {
   return (
     <Link key={oferta.id} to={`/hotels/${oferta.slug}/camere/${oferta.slugs}`} className='w-[35%] max-modf:w-[50%] max-modf1:w-[60%] max-modf2:w-[70%] shrink-0 relative group overflow-hidden border border-button/20 rounded-lg h-70'>
       
-      <img className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 ease-in-out' src={`${import.meta.env.BASE_URL}${oferta?.image}`} alt="" />
+      <img className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 ease-in-out'
+      src={oferta?.image?.startsWith("http")
+      ? oferta?.image
+      : `${import.meta.env.BASE_URL}${oferta?.image}`} alt="" />
       <p className={`absolute bg-green-600 top-4 left-4 rounded-xl px-3 py-1.5`}>{oferta?.reducerea*100}%</p>
       <div className='absolute bottom-0 bg-background/65 w-full py-3'>
         <div className='px-4'>

@@ -19,7 +19,7 @@ const RoomsPage = () => {
 
   
   const hotel = hotels.find(h => h.slug === slug);
-  const room = hotel.rooms.find(r => r.slugs === roomSlug);
+  const room = hotel?.rooms?.find(r => r.slugs === roomSlug);
   const navigate = useNavigate();
 
   const location = useLocation();
